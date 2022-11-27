@@ -65,14 +65,14 @@ $(document).ready(function () {
     const params = new URLSearchParams(query);
     const campaignId = params.get("campaign_id");
   
-    xhr("get", `http://localhost:3000/api/campaign/results/${campaignId}`, {}).done(
+    xhr("get", `http://localhost:3000/api/campaign/info/${campaignId}`, {}).done(
       function (json) {
         const campaign = json[0];
   
-        const title = `<h1>${campaign.name} - ${campaign.society_name}</h1>`;
+        const title = `<h1>${campaign.name}</h1>`;
         const question = `
         <form id="questions">
-          <h2>Ballot</h2>
+          <h2>${campaign.society_name}</h2>
         </form`;
   
         $("#title-div").append(title);
@@ -82,21 +82,22 @@ $(document).ready(function () {
     
   xhr(
     "get",
-    `http://localhost:3000/api/campaign/results/${campaignId}`,
-    {}
-  ).done(function (json) {
-    const formattedQuestions = formatQuestions(json);
+    `http://localhost:3000/api/campaign/results/${campaignId}`, {}).done(
+      function (json) {
+      const formattedQuestions = formatQuestions(json);
 
     // Create the initial divs for each position/question
     formattedQuestions.forEach((element) => {
       let question = `
-        <fieldset><legend>${element.question}</legend>`;
+        <fieldset class="fieldset-auto-width"><legend>${element.question}</legend>`;
 
-      // Add each candidate
+      // Add each choice
       element.choices.forEach((choice) => {
-        question += `<input type="checkbox" value="${element.response_id}" name="${element.question_id}"/>`;
+        //swapped response_id for name
+        question += `<input type="checkbox" value="${element.name}" name="${element.question_id}"/><label for="${element.question_id}">${choice.name}</label>
+        <div class="tooltip">&#128712;<span class="tooltiptext">| Title: ${choice.title} | Bio: ${choice.bio}</span></div><br>`;
       });
-      question += "</fieldset>";
+      question += "</fieldset><br>";
 
       $("#ballot-div").append(question);
     });

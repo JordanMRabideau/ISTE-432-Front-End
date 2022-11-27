@@ -1,0 +1,45 @@
+body {
+    text-align: center;
+    background: #04233c;
+    color: white;
+}
+h1 {
+    font-size: 3.5vw;
+    margin-bottom: 0em;
+}
+h2 {
+    font-size: 2vw;
+}
+.tooltip {
+    display: inline;
+}
+.tooltiptext {
+    visibility: hidden;
+    z-index: 1000;
+    position: absolute;
+    width: 30%;
+    background: #04233c;
+    color: rgb(255, 255, 255);
+    text-align: justify;
+    font-size: 0.9vw;
+    border-radius: 2px;
+    padding: 1px 0;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.fieldset-auto-width {
+    display: inline-block;
+    margin: 1em;
+    padding-left: 3.5vw;
+    padding-right: 3.5vw;
+    font-size: 0.7vw;
+}
+legend {
+    font-size: 1.4vw;
+    margin-bottom: 0.3vw;
+}
+label {
+    padding-bottom: 2em;
+    font-size: 1vw;
+}
