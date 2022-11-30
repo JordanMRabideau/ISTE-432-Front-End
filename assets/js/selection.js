@@ -14,11 +14,8 @@ function xhr(getPost, url, data) {
 }
 
 $(document).ready(function () {
-    const query = window.location.search;
-    const params = new URLSearchParams(query);
-    // const societyId = params.get("society_id");
     const societyId = window.localStorage.getItem("society")
-
+    const memberId = window.localStorage.getItem("user")
     xhr("get", `http://localhost:3000/api/societies/${societyId}`, {}).done(
         function (json) {
             const society = json[0];
@@ -30,13 +27,19 @@ $(document).ready(function () {
         }
     )
   
-    xhr("get", `http://localhost:3000/api/societies/campaigns/${societyId}`, {}).done(
+    xhr("get", `http://localhost:3000/api/campaigns/${societyId}/${memberId}`, {}).done(
       function (json) {
         const campaign = json;
-        campaign.forEach((element) => {
+        if (campaign.length != 0) {
+          campaign.forEach((element) => {
             let name = `<li><button class="button" href="./ballot.html?campaign_id=${element.campaign_id}"><span></span>${element.name}</button></li>`;
             $("#selections").append(name);
-        });
+          });
+        } else {
+          const placeholder = `<h2>There are currently no active campaigns.</h2>`
+          $("#selections").append(placeholder);
+        }
+
       }
     );
 });

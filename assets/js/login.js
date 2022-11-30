@@ -9,8 +9,7 @@ function xhr(getPost, url, data) {
     async: true,
     url: url,
     success: function(data) {
-        console.log(data)
-        window.localStorage.setItem("user", data.user.member_id)
+        window.localStorage.setItem("user", data.user)
         window.location.href = "./pages/campaign_selection.html"
     },
     error: function(err, exception) {

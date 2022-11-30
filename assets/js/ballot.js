@@ -68,8 +68,6 @@ function formatQuestions(questions) {
     question.choices.push(choice);
   });
 
-  console.log(formatted);
-
   return formatted;
 }
 
