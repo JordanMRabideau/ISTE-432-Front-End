@@ -2,25 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Campaign Portal</title>
+    <title>Campaign Login Form</title>
+    <link rel="stylesheet" href="./assets/css/login.css" />
   </head>
   <body>
-    <div>
-      <button>
-        <a href="./pages/ballot.html">View Ballot</a>
-      </button>
+    <!-- login form.html -->
+    <div class="login-page">
+      <div class="form">
+        <div class="title">
+          <form id="login-form" class="login-form">
+            <input required id="auth1" type="text" placeholder="username" />
+            <input required id="auth2" type="password" placeholder="password" />
+            <br /><br />
+            <button id="login" form="login-form" type="submit">
+              <span></span>
+              Submit
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
-
     <!-- Jquery CDN -->
     <script
       src="https://code.jquery.com/jquery-3.6.0.min.js"
       integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
       crossorigin="anonymous"
     ></script>
-
-    <!-- Not sure what is supposed to be here on client end-->
-    <script src="../ISTE-432-Admin/assets/js/script.js"></script>
+    <script src="./assets/js/login.js"></script>
   </body>
 </html>

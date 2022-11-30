@@ -16,7 +16,8 @@ function xhr(getPost, url, data) {
 $(document).ready(function () {
     const query = window.location.search;
     const params = new URLSearchParams(query);
-    const societyId = params.get("society_id");
+    // const societyId = params.get("society_id");
+    const societyId = window.localStorage.getItem("society")
 
     xhr("get", `http://localhost:3000/api/societies/${societyId}`, {}).done(
         function (json) {

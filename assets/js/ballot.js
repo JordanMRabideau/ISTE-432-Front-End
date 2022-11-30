@@ -13,6 +13,19 @@ function xhr(getPost, url, data) {
   });
 }
 
+function getInputs() {
+  const inputs = $("#questions :checked")
+  let inputObjs = []
+  inputs.each(function() {
+    inputObjs.push({
+      question_id: Number($(this).data().question),
+      response_id: Number($(this).val())
+    })
+  })
+
+  return inputObjs
+}
+
 function formatQuestions(questions) {
   const sorted = questions.sort((a, b) => {
     if (a.question_placement === b.question_placement) {
@@ -69,7 +82,16 @@ $(document).ready(function () {
 
   // Add click event to submit button
   $("#ballot-div").on("click", "#check-ballot", function() {
-    alert("test")
+    const data = {
+      society_id: 1, //Hardcoded for now
+      campaign_id: campaignId,
+      member_id: 2, //hardcoded for now
+      selections: getInputs()
+    }
+
+    xhr("post", "http://localhost:3000/api/ballot/submit", data).done(function(response) {
+      console.log(response)
+    })
   })
 
   // Prevent user from checking the max amount of choices
@@ -127,7 +149,7 @@ $(document).ready(function () {
           <p>Select up to ${element.maximum_selections} choice(s)</p>`;
       // Add each choice
       element.choices.forEach((choice) => {
-        question += `<input type="checkbox" class="choice" value="${choice.response_id}" name="${element.question_id}"/><label for="${element.question_id}">${choice.name}</label>
+        question += `<input data-question="${element.question_id}" type="checkbox" class="choice" value="${choice.response_id}" name="${element.question_id}"/><label for="${element.question_id}">${choice.name}</label>
         <div class="tooltip">&#128712;<span class="tooltiptext">| Title: ${choice.title} | Bio: ${choice.bio}</span></div><br>`;
       });
       question += "</fieldset><br>";
