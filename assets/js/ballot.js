@@ -1,6 +1,9 @@
 "use strict";
 
-function xhr(getPost, url, data) {
+function xhr(getPost, url, data, success, error) {
+  const successCallback = success ? success : () => {}
+  const errorCallback = error ? error : () => {}
+
   return $.ajax({
     type: getPost,
     data: data,
@@ -8,6 +11,8 @@ function xhr(getPost, url, data) {
     cache: false,
     async: true,
     url: url,
+    success: successCallback,
+    error: errorCallback
   }).fail(function (err) {
     console.log(err);
   });
@@ -77,17 +82,21 @@ $(document).ready(function () {
   const query = window.location.search;
   const params = new URLSearchParams(query);
   const campaignId = params.get("campaign_id");
+  const societyId = window.localStorage.getItem("society")
+  const memberId = window.localStorage.getItem("user")
 
   // Add click event to submit button
   $("#ballot-div").on("click", "#check-ballot", function() {
     const data = {
-      society_id: 1, //Hardcoded for now
+      society_id: societyId,
       campaign_id: campaignId,
-      member_id: 2, //hardcoded for now
+      member_id: memberId,
       selections: getInputs()
     }
 
-    xhr("post", "http://localhost:3000/api/ballot/submit", data).done(function(response) {
+    xhr("post", "http://localhost:3000/api/ballot/submit", data, function(data) {
+      window.location.href = "./campaign_selection.html"
+    }).done(function(response) {
       console.log(response)
     })
   })

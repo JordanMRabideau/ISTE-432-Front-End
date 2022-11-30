@@ -32,7 +32,7 @@ $(document).ready(function () {
         const campaign = json;
         if (campaign.length != 0) {
           campaign.forEach((element) => {
-            let name = `<li><button class="button" href="./ballot.html?campaign_id=${element.campaign_id}"><span></span>${element.name}</button></li>`;
+            let name = `<li><a href="./ballot.html?campaign_id=${element.campaign_id}"><button class="button"><span></span>${element.name}</button></a></li>`;
             $("#selections").append(name);
           });
         } else {
