@@ -22,7 +22,7 @@ $(document).ready(function () {
         function (json) {
             const society = json[0];
 
-            const title = `<h2>${society.name}</h2>`;
+            const title = `<h1>${society.name}</h1>`;
             const list = `<ul id="selections"></ul`;
             $("#title-div").append(title);
             $("#campaign-div").append(list);
@@ -33,7 +33,7 @@ $(document).ready(function () {
       function (json) {
         const campaign = json;
         campaign.forEach((element) => {
-            let name = `<li><a href="./ballot.html?campaign_id=${element.campaign_id}">${element.name}</a></li>`;
+            let name = `<li><a href="./ballot.html?campaign_id=${element.campaign_id}"><span></span><span></span><span></span><span></span>${element.name}</a></li>`;
             $("#selections").append(name);
         });
       }
