@@ -38,11 +38,13 @@
   transition: all 0.3 ease;
   cursor: pointer;
 }
-a {
+button {
   position: relative;
   display: inline-block;
   padding: 15px 30px;
   color: #2196f3;
+  background-color: unset;
+  border: none;
   text-transform: uppercase;
   letter-spacing: 4px;
   text-decoration: none;
@@ -51,24 +53,24 @@ a {
   transition: 0.2s;
   cursor: pointer;
 }
-a:hover {
+button:hover {
   color: #ffffff;
   background: #1d6daf;
   box-shadow: 0 0 10px #1d6daf, 0 0 40px #1d6daf, 0 0 80px #1d6daf;
   transition-delay: 0.3s;
 }
-a span {
+button span {
   position: absolute;
   display: block;
 }
-a span:nth-child(1) {
+button span:nth-child(1) {
   top: 0;
   left: -100%;
   width: 100%;
   height: 2px;
   background: linear-gradient(90deg, transparent, #1d6daf);
 }
-a:hover span:nth-child(1) {
+button:hover span:nth-child(1) {
   left: 100%;
   transition: 1s;
 }
