@@ -60,10 +60,43 @@ function formatQuestions(questions) {
   return formatted;
 }
 
+
+
 $(document).ready(function () {
   const query = window.location.search;
   const params = new URLSearchParams(query);
   const campaignId = params.get("campaign_id");
+
+  // Add click event to submit button
+  $("#ballot-div").on("click", "#check-ballot", function() {
+    alert("test")
+  })
+
+  // Prevent user from checking the max amount of choices
+  $("#ballot-div").on("click", "input:checkbox", function(event) {
+    // event.preventDefault()
+    const $clicked = $(this)
+    const $siblings = $(this).siblings("input:checkbox")
+    const max = $(this).parent().data().max
+
+    // Only check if the user is trying to tick the checkbox
+    if ($clicked.is(":checked")) {
+      let currentlyChecked = 0
+      
+      $siblings.each(function() {
+        if ($(this).is(":checked")) {
+          currentlyChecked++
+        }
+      })
+
+      if (currentlyChecked < max) {
+        $clicked.prop("checked", true)
+      } else {
+        alert(`You may only select up to ${max} options.`)
+        $clicked.prop("checked", false)
+      }
+    }
+  })
 
   xhr("get", `http://localhost:3000/api/campaign/info/${campaignId}`, {}).done(
     function (json) {
@@ -90,16 +123,19 @@ $(document).ready(function () {
     // Create the initial divs for each position/question
     formattedQuestions.forEach((element) => {
       let question = `
-        <fieldset class="fieldset-auto-width"><legend>${element.question}</legend>`;
-
+        <fieldset data-max="${element.maximum_selections}" class="question fieldset-auto-width"><legend>${element.question}</legend>
+          <p>Select up to ${element.maximum_selections} choice(s)</p>`;
       // Add each choice
       element.choices.forEach((choice) => {
-        question += `<input type="checkbox" value="${element.name}" name="${element.question_id}"/><label for="${element.question_id}">${choice.name}</label>
+        question += `<input type="checkbox" class="choice" value="${choice.response_id}" name="${element.question_id}"/><label for="${element.question_id}">${choice.name}</label>
         <div class="tooltip">&#128712;<span class="tooltiptext">| Title: ${choice.title} | Bio: ${choice.bio}</span></div><br>`;
       });
       question += "</fieldset><br>";
 
       $("#questions").append(question);
     });
+
+    const submitButton = `<button id='check-ballot'>Submit</button>`
+    $("#ballot-div").append(submitButton)
   });
 });
