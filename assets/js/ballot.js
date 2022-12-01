@@ -24,11 +24,46 @@ function getInputs() {
   inputs.each(function() {
     inputObjs.push({
       question_id: Number($(this).data().question),
-      response_id: Number($(this).val())
+      question: $(this).siblings("legend").text(),
+      response_id: Number($(this).val()),
+      response: $(this).siblings(`label[for=choice-${$(this).val()}]`).text()
     })
   })
 
   return inputObjs
+}
+
+// This will take the user's inputs and group them into questions to be printed to the modal
+function groupInputs() {
+  const inputs = getInputs();
+  const questions = []
+
+  inputs.forEach((i) => {
+    let question = questions.find(q => q.question_id === i.question_id)
+    
+    // Create a new question if it doesnt already exist
+    if (!question) {
+      questions.push({
+        question_id: i.question_id,
+        question: i.question,
+        responses: [
+          {
+            response_id: i.response_id,
+            response: i.response
+          }
+        ]
+      })
+    } 
+    
+    else {
+      question.responses.push({
+        response_id: i.response_id,
+        response: i.response
+      })
+    }
+  })
+
+  return questions
 }
 
 function formatQuestions(questions) {
@@ -46,7 +81,6 @@ function formatQuestions(questions) {
 
     return -1;
   });
-  console.log(sorted);
   let formatted = [];
 
   sorted.forEach((item) => {
@@ -85,8 +119,33 @@ $(document).ready(function () {
   const societyId = window.localStorage.getItem("society")
   const memberId = window.localStorage.getItem("user")
 
-  // Add click event to submit button
+  // Open the review modal
   $("#ballot-div").on("click", "#check-ballot", function() {
+    $("#selections").empty()
+
+    const data = {
+      society_id: societyId,
+      campaign_id: campaignId,
+      member_id: memberId,
+      selections: groupInputs()
+    }
+
+    data.selections.forEach((selection) => {
+      const item = `<h3>${selection.question}</h3>`
+      $("#selections").append(item)
+      
+      selection.responses.forEach(choice => {
+        const ch = `<p>${choice.response}</p>`
+        $("#selections").append(ch)
+      })
+
+    })
+    
+    $("#confirm-modal").modal()
+  })
+
+  // Submit the ballot
+  $("#submit-ballot").click(function() {
     const data = {
       society_id: societyId,
       campaign_id: campaignId,
@@ -99,6 +158,11 @@ $(document).ready(function () {
     }).done(function(response) {
       console.log(response)
     })
+  })
+
+  // Close the modal
+  $("#close-modal").click(function() {
+    $.modal.close();
   })
 
   // Prevent user from checking the max amount of choices
@@ -156,7 +220,7 @@ $(document).ready(function () {
           <p>Select up to ${element.maximum_selections} choice(s)</p>`;
       // Add each choice
       element.choices.forEach((choice) => {
-        question += `<input data-question="${element.question_id}" type="checkbox" class="choice" value="${choice.response_id}" name="${element.question_id}"/><label for="${element.question_id}">${choice.name}</label>
+        question += `<input data-question="${element.question_id}" id="choice-${choice.response_id}" type="checkbox" class="choice" value="${choice.response_id}" name="${element.question_id}"/><label for="choice-${choice.response_id}">${choice.name}</label>
         <div class="tooltip">&#128712;<span class="tooltiptext">| Title: ${choice.title} | Bio: ${choice.bio}</span></div><br>`;
       });
       question += "</fieldset><br>";

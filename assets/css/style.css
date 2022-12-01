@@ -94,3 +94,6 @@ button:hover span:nth-child(1) {
     text-align: justify;
     line-height: 1.4em;
 }
+#confirm-modal {
+    color: black;
+}
