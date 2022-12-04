@@ -77,7 +77,7 @@ function formatQuestions(questions) {
         return 1;
       }
 
-      return 1;
+      return -1;
     }
     if (a.question_placement > b.question_placement) {
       return 1;
