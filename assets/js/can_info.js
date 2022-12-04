@@ -34,8 +34,27 @@ $(document).ready(function () {
     function (json) {
       const data = json;
       data.forEach((element) => {
-        let candidate = `<div class="can_info">Name: ${element.name}<br>Title: ${element.title}<br>Bio: ${element.bio}</div>`;
+        console.log(element)
+        let candidate = `<div class="can_info">Name: ${element.name}<br>`;
+
+        if (element.image_filepath) {
+          candidate += `<img src=${element.image_filepath.replace("C:\\fakepath\\", "../assets/images/")} height="100px" width="auto"/><br>`
+        }
+
+        if (element.title) {
+          candidate += `Title: ${element.title}<br>`
+        }
+
+        if (element.bio) {
+          candidate += `Bio: ${element.bio}`
+        }
+
+        candidate += `</div>`
         $("#candidate-div").append(candidate);
       });
     });
+
+    $("#back").click(function() {
+      window.location.href = `./ballot.html?campaign_id=${campaignId}`
+    })
 });

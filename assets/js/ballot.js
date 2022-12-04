@@ -37,18 +37,23 @@ function getInputs() {
 }
 
 // This will take the user's inputs and group them into questions to be printed to the modal
-function groupInputs() {
+function groupInputs(formatted) {
+  console.log(formatted)
   const inputs = getInputs();
-  const questions = []
+  const data = {
+    missing: 0,
+    questions: []
+  }
 
   inputs.forEach((i) => {
-    let question = questions.find(q => q.question_id === i.question_id)
+    let question = data.questions.find(q => q.question_id === i.question_id)
     
     // Create a new question if it doesnt already exist
     if (!question) {
-      questions.push({
+      data.questions.push({
         question_id: i.question_id,
         question: i.question,
+        difference: 0,
         responses: [
           {
             response_id: i.response_id,
@@ -64,9 +69,15 @@ function groupInputs() {
         response: i.response
       })
     }
+
+    question = data.questions.find(q => q.question_id === i.question_id)
+
+    question.difference = formatted.find(f => f.question_id === question.question_id).maximum_selections - question.responses.length
   })
 
-  return questions
+  data.missing = formatted.length - data.questions.length
+
+  return data
 }
 
 // Format questions according to placement
@@ -94,7 +105,7 @@ function formatQuestions(questions) {
       name: item.name,
       title: item.title,
       bio: item.bio,
-      image_filepath: item.image_filepath,
+      image_filepath: item.image_filepath.replace("C:\\fakepath\\", "../assets/images/"),
       vote_count: item.vote_count,
     };
     // If the question isn't already in the formatted array, create the question and add it
@@ -122,6 +133,7 @@ $(document).ready(function () {
   const campaignId = params.get("campaign_id");
   const societyId = window.localStorage.getItem("society")
   const memberId = window.localStorage.getItem("user")
+  let formattedQuestions;
 
   // Open the review modal
   $("#ballot-div").on("click", "#check-ballot", function() {
@@ -131,12 +143,23 @@ $(document).ready(function () {
       society_id: societyId,
       campaign_id: campaignId,
       member_id: memberId,
-      selections: groupInputs()
+      selections: groupInputs(formattedQuestions)
     }
 
-    data.selections.forEach((selection) => {
+    console.log(data)
+    if (data.selections.missing > 0) {
+      const warning = `*WARNING - You have not voted for ${data.selections.missing} option(s)*<br/>`
+      $("#selections").append(warning)
+    }
+
+    data.selections.questions.forEach((selection) => {
       const item = `<h3>${selection.question}</h3>`
       $("#selections").append(item)
+
+      if (selection.difference > 0) {
+        const warning = `*WARNING - You may vote for ${selection.difference} more option(s) on this question*<br/>`
+        $("#selections").append(warning)
+      }
       
       selection.responses.forEach(choice => {
         const ch = `<p>${choice.response}</p>`
@@ -158,7 +181,7 @@ $(document).ready(function () {
     }
 
     xhr("post", "http://localhost:3000/api/ballot/submit", data, function(data) {
-      window.location.href = "./campaign_selection.html"
+      window.location.href = `./confirm.html?confirmation=${data.ballot}`
     }).done(function(response) {
       console.log(response)
     })
@@ -216,8 +239,7 @@ $(document).ready(function () {
     `http://localhost:3000/api/campaign/results/${campaignId}`,
     {}
   ).done(function (json) {
-    const formattedQuestions = formatQuestions(json);
-
+    formattedQuestions = formatQuestions(json);
     // Create the initial divs for each position/question
     formattedQuestions.forEach((element) => {
       let question = `
@@ -225,8 +247,29 @@ $(document).ready(function () {
           <p>Select up to ${element.maximum_selections} choice(s)</p>`;
       // Add each choice
       element.choices.forEach((choice) => {
-        question += `<input data-question="${element.question_id}" id="choice-${choice.response_id}" type="checkbox" class="choice" value="${choice.response_id}" name="${element.question_id}"/><label for="choice-${choice.response_id}">${choice.name}</label>
-        <div class="tooltip">&#128712;<span class="tooltiptext">| Title: ${choice.title} | Bio: ${choice.bio}</span></div><br>`;
+        question += `
+        <input data-question="${element.question_id}" id="choice-${choice.response_id}" type="checkbox" class="choice" value="${choice.response_id}" name="${element.question_id}"/><label for="choice-${choice.response_id}">${choice.name}</label>`
+        
+        // If the choice has any additional info, show the info
+        if (choice.image_filepath || choice.title || choice.bio) {
+          question += `<div class="tooltip">&#128712;<span class="tooltiptext">`
+
+          //conditionally add existing information
+          if (choice.image_filepath) {
+            question += `<img src=${choice.image_filepath} height="100px" width="auto"/>`
+          }
+  
+          if (choice.title) {
+            question += `| Title: ${choice.title} `
+          }
+  
+          if (choice.bio) {
+            question += `| Bio: ${choice.bio}`
+          }
+  
+          question += `</span></div><br>`;
+
+        }
       });
       question += "</fieldset><br>";
 
@@ -236,4 +279,8 @@ $(document).ready(function () {
     const submitButton = `<button id='check-ballot'>Submit</button>`
     $("#ballot-div").append(submitButton)
   });
+
+  $("#show-candidates").click(function() {
+    window.location.href = `./candidate_info.html?campaign_id=${campaignId}`
+  })
 });
