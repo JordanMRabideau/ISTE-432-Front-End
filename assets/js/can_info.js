@@ -1,5 +1,7 @@
 "use strict";
 
+// Page to load candidate information for user to review
+
 function xhr(getPost, url, data) {
   return $.ajax({
     type: getPost,

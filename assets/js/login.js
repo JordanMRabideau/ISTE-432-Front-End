@@ -1,5 +1,7 @@
 "use strict";
 
+// Page for members to log in
+
 function xhr(getPost, url, data, successCallBack) {
   return $.ajax({
     type: getPost,
@@ -28,6 +30,7 @@ $(document).ready(function() {
     window.localStorage.setItem("society", 1) // The society is hardcoded for each site
     const societyId = window.localStorage.getItem("society");
 
+    // Dynamically change values of the field placeholders for types of authentication
     xhr("get", `http://localhost:3000/api/authname/${societyId}`,{}).done(function (json) {
         const society = json[0];
         
@@ -35,6 +38,7 @@ $(document).ready(function() {
         $("#auth2").attr("placeholder", society.auth2_name);
     });
 
+    // Authenticate user input
     $("#login-form").submit(function(e) {
         e.preventDefault()
         const data = {

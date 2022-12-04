@@ -1,5 +1,7 @@
 "use strict";
 
+// Page to load active campaigns the logged in user is a part of
+
 function xhr(getPost, url, data) {
   return $.ajax({
     type: getPost,

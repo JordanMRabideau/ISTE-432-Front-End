@@ -1,5 +1,7 @@
 "use strict";
 
+// Page will load ballot questions with choices in one continuously scrolling page for user to select from and submit
+
 function xhr(getPost, url, data, success, error) {
   const successCallback = success ? success : () => {}
   const errorCallback = error ? error : () => {}
@@ -18,6 +20,7 @@ function xhr(getPost, url, data, success, error) {
   });
 }
 
+// Get user choices
 function getInputs() {
   const inputs = $("#questions :checked")
   let inputObjs = []
@@ -66,6 +69,7 @@ function groupInputs() {
   return questions
 }
 
+// Format questions according to placement
 function formatQuestions(questions) {
   const sorted = questions.sort((a, b) => {
     if (a.question_placement === b.question_placement) {
@@ -191,6 +195,7 @@ $(document).ready(function () {
     }
   })
 
+  // Get campaign name and create form for questions
   xhr("get", `http://localhost:3000/api/campaign/info/${campaignId}`, {}).done(
     function (json) {
       const campaign = json[0];
