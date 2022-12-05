@@ -1,8 +1,8 @@
 "use strict";
 
 function xhr(getPost, url, data, success, error) {
-  const successCallback = success ? success : () => {}
-  const errorCallback = error ? error : () => {}
+  const successCallback = success ? success : () => {};
+  const errorCallback = error ? error : () => {};
 
   return $.ajax({
     type: getPost,
@@ -12,25 +12,26 @@ function xhr(getPost, url, data, success, error) {
     async: true,
     url: url,
     success: successCallback,
-    error: errorCallback
+    error: errorCallback,
   }).fail(function (err) {
     console.log(err);
   });
 }
 
-$(document).ready(function() {
-    const query = window.location.search;
-    const params = new URLSearchParams(query);
-    const confimation = params.get("confirmation");
+$(document).ready(function () {
+  const query = window.location.search;
+  const params = new URLSearchParams(query);
+  const confimation = params.get("confirmation");
 
-    $("#confirmation").append(confimation)
+  $("#confirmation").append(confimation);
 
-    $("#log-out").click(function(){
-        window.localStorage.removeItem("user")
-        window.location.href = "/"
+  $("#log-out")
+    .click(function () {
+      window.localStorage.removeItem("user");
+      window.location.href = "../index.html";
     })
-
-    $("#home").click(function() {
-        window.location.href = "./campaign_selection.html"
-    })
-})
+    .$("#home")
+    .click(function () {
+      window.location.href = "./campaign_selection.html";
+    });
+});
