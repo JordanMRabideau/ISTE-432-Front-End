@@ -25,13 +25,12 @@ $(document).ready(function () {
 
   $("#confirmation").append(confimation);
 
-  $("#log-out")
-    .click(function () {
-      window.localStorage.removeItem("user");
-      window.location.href = "../index.html";
-    })
-    .$("#home")
-    .click(function () {
-      window.location.href = "./campaign_selection.html";
-    });
+  $("#log-out").click(function () {
+    window.localStorage.removeItem("user");
+    window.location.href = "../index.html";
+  });
+
+  $("#home").click(function () {
+    window.location.href = "./campaign_selection.html";
+  });
 });
